@@ -1,0 +1,14 @@
+version: "3.9"
+
+services:
+  amp:
+    container_name: amp
+    image: mitchtalmadge/amp-dockerized:latest
+    mac_address: 02:42:AC:89:39:9C
+    network_mode: "host"
+    volumes:
+      - "/mnt/3TB/docker/Data/amp:/home/amp/.ampdata"
+    environment:
+      - TZ=Europe/Oslo
+      - AMP_LICENCE=${AMP_LICENCE}
+    restart: unless-stopped

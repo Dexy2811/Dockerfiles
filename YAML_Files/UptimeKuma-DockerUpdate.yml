@@ -1,0 +1,30 @@
+services:
+  whatsupdocker:
+    image: getwud/wud:latest
+    container_name: Whats-up-docker
+    environment:
+      - WUD_TRIGGER_DISCORD_1_URL=YOURDISCORDSERVERWEBHOOKURL
+      - WUD_TRIGGER_DISCORD_1_BOTUSERNAME=Whats Up docker
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:RO
+    ports:
+      - 3005:3000
+    networks:
+      - frontend
+    restart: unless-stopped
+
+  uptime-kuma:
+    image: louislam/uptime-kuma:latest
+    container_name: Uptime-Kuma
+    volumes:
+      - ./data:/app/data
+      - /var/run/docker.sock:/var/run/docker.sock:RO
+    ports:
+      - 3001:3001
+    restart: unless-stopped
+    networks:
+      - frontend
+
+networks:
+  frontend:
+    external: true

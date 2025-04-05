@@ -1,0 +1,17 @@
+services:
+  hugo:
+    container_name: hugo
+    image: klakegg/hugo:ext-alpine
+    networks:
+      - frontend
+    ports:
+      - "1313:1313"
+    volumes:
+      - /mnt/3TB/docker/Data/Hugo/src/Homelab:/src
+    command: server --bind 0.0.0.0
+
+networks:
+  frontend:
+    external: true
+  backend:
+    external: true

@@ -1,0 +1,30 @@
+services:
+  certbot:
+    image: certbot-dns-domeneshop
+    container_name: certbot
+    volumes:
+      - /mnt/3TB/docker/Data/certbot/certs:/etc/letsencrypt
+      - /mnt/3TB/docker/Data/certbot/logs:/var/log/letsencrypt
+      - /mnt/3TB/docker/Data/certbot/domainnameshop.ini:/etc/letsencrypt/domainnameshop.ini
+    environment:
+      - CERTBOT_EMAIL=your-email@example.com
+      - CERTBOT_DOMAINS=*.int.example.com,blog.example.com
+    entrypoint: >
+      /bin/sh -c 'trap exit TERM;
+      while :; do
+        certbot certonly --dns-domeneshop \
+        --dns-domeneshop-credentials /etc/letsencrypt/domainnameshop.ini \
+        --dns-domeneshop-propagation-seconds 60 \
+        -d "*.int.dexy.no" -d "blog.wfj.no" \
+        --email ${CERTBOT_EMAIL} \
+        --agree-tos \
+        --keep-until-expiring \
+        --quiet;
+        sleep 12h & wait $${!};
+      done;'
+    networks:
+      - backend
+
+networks:
+  backend:
+    external: true

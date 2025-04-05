@@ -1,0 +1,17 @@
+  wg-ez:
+    image: ghcr.io/wg-easy/wg-easy
+    container_name: wg-easy
+    volumes:
+      - "/mnt/3TB/docker/Data/etc_wireguard:/etc/wireguard"
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    network_mode: "host"
+    environment:
+      - LANG=en
+      - WG_HOST=${WG_HOST}
+      - PASSWORD_HASH=${WG_ADMIN_PASSWORD}
+      - WG_PORT=51820
+      - WG_ALLOWED_IPS=10.0.10.0/24
+      - UI_TRAFFIC_STATS=true
+    restart: unless-stopped

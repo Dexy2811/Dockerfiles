@@ -1,0 +1,25 @@
+services:
+  haproxy:
+    image: haproxy:latest
+    container_name: haproxy
+    volumes:
+      - /mnt/3TB/docker/Data/haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+      - /mnt/3TB/docker/Data/haproxy/errors:/etc/haproxy/errors:ro
+      - /mnt/3TB/docker/Data/haproxy/certs:/usr/local/etc/haproxy/certs:ro
+    ports:
+      - "80:80"
+      - "443:443"
+      - "2368:2368"
+      - "5055:5055"
+    networks:
+     - backend
+     - frontend
+        #ipv4_address: 172.19.0.51
+    restart: no
+    command: ["haproxy", "-f", "/usr/local/etc/haproxy/haproxy.cfg"]
+
+networks:
+  frontend:
+    external: True
+  backend:
+    external: true

@@ -1,0 +1,40 @@
+services:
+  ghost:
+    image: ghost:latest
+    container_name: ghost
+    networks:
+      - frontend
+    volumes:
+      - /mnt/3TB/docker/Data/ghost/content:/var/lib/ghost/content:z
+    environment:
+      url: https://blog.example.com
+      admin__url: https://blog.example.com/ghost
+      NODE_ENV: production
+      database__client: mysql
+      database__connection__host: mysql
+      database__connection__user: ghostusr
+      database__connection__password: ${ghostpwd}
+      database__connection__database: ghostdata
+    depends_on:
+      - mysql
+    restart: always
+
+  mysql:
+    image: mysql:latest
+    container_name: mysql
+    networks:
+      - frontend
+    volumes:
+      - /mnt/3TB/docker/Data/dbdata:/var/lib/mysql:z
+    environment:
+      MYSQL_ROOT_PASSWORD: ${rootpwd}
+      MYSQL_DATABASE: ghostdata
+      MYSQL_USER: ghostusr
+      MYSQL_PASSWORD: ${ghostpwd}
+    ports:
+      - "3306:3306"
+    restart: always
+
+networks:
+  frontend:
+    external: True
