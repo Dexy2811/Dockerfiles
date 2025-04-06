@@ -10,16 +10,18 @@ services:
       - "80:80"
       - "443:443"
       - "2368:2368"
-      - "5055:5055"
     networks:
      - backend
      - frontend
+     - monitoring
         #ipv4_address: 172.19.0.51
-    restart: no
+    restart: unless-stopped
     command: ["haproxy", "-f", "/usr/local/etc/haproxy/haproxy.cfg"]
 
 networks:
   frontend:
     external: True
   backend:
-    external: true
+    external: True
+  monitoring:
+    external: True
