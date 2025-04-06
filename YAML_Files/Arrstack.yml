@@ -59,7 +59,7 @@ services:
       - TZ=Europe/Oslo
     volumes:
       - /mnt/3TB/docker/Data/sonarr/config:/config
-      - /mnt/pve/media:/downloads
+      - /mnt/NAS/Media/:/downloads
     ports:
       - "8989:8989"
     restart: unless-stopped
