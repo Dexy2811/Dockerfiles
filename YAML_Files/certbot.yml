@@ -15,7 +15,7 @@ services:
         certbot certonly --dns-domeneshop \
         --dns-domeneshop-credentials /etc/letsencrypt/domainnameshop.ini \
         --dns-domeneshop-propagation-seconds 60 \
-        -d "*.int.dexy.no" -d "blog.wfj.no" \
+        -d "*.int.example.com" -d "blog.example.com" \
         --email ${CERTBOT_EMAIL} \
         --agree-tos \
         --keep-until-expiring \
