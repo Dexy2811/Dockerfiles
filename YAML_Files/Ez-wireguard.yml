@@ -1,4 +1,4 @@
-  wg-ez:
+services:
     image: ghcr.io/wg-easy/wg-easy
     container_name: wg-easy
     volumes:
