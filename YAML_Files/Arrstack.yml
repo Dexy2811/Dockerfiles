@@ -94,6 +94,7 @@ services:
     image: lscr.io/linuxserver/overseerr:latest
     container_name: overseerr
     environment:
+      - BASE_URL=https://overseerr.dexy.no
       - PUID=1000
       - PGID=1000
       - TZ=Europe/Oslo
