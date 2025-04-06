@@ -10,7 +10,7 @@ services:
       - QBT_WEBUI_PASSWORD=${QBT_WEBUI_PASSWORD}
     volumes:
       - /mnt/3TB/docker/Data/qbittorrent/config:/config
-      - /mnt/pve/media:/downloads
+      - /mnt/NAS/Media/:/downloads
     ports:
       - "8090:8090"
     restart: unless-stopped
@@ -28,7 +28,7 @@ services:
       - NZBGET_PASS=${NZB_PASS}
     volumes:
       - /mnt/3TB/docker/Data/nzbget/config:/config
-      - /mnt/pve/media:/downloads
+      - /mnt/NAS/Media/:/downloads
     ports:
       - "6789:6789"
     restart: unless-stopped
@@ -79,7 +79,7 @@ services:
       - TZ=Europe/Oslo
     volumes:
       - /mnt/3TB/docker/Data/radarr/config:/config
-      - /mnt/pve/media:/downloads
+      - /mnt/NAS/Media/:/downloads
     ports:
       - "7878:7878"
     restart: unless-stopped
@@ -125,7 +125,7 @@ services:
       - /mnt/3TB/docker/Data/plex/config:/config
       - /mnt/3TB/docker/Data/plex/transcode:/transcode
       - /mnt/3TB/docker/Data/plex/transcode/sessions:/transcoding/Transcode/Sessions
-      - /mnt/pve/media:/media
+      - /mnt/NAS/Media/:/media
 
     ports:
       - "32400:32400"
