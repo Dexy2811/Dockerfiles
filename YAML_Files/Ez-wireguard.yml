@@ -1,4 +1,5 @@
 services:
+  wg-easy:
     image: ghcr.io/wg-easy/wg-easy
     container_name: wg-easy
     volumes:
@@ -8,9 +9,9 @@ services:
       - SYS_MODULE
     network_mode: "host"
     environment:
-      - LANG=en
-      - WG_HOST=${WG_HOST}
-      - PASSWORD_HASH=${WG_ADMIN_PASSWORD}
-      - WG_ALLOWED_IPS=10.0.10.0/24
-      - UI_TRAFFIC_STATS=true
+      LANG: en
+      WG_HOST: ${WG_HOST}
+      PASSWORD: ${WG_ADMIN_PASSWORD}
+      WG_ALLOWED_IPS: 10.0.10.0/24
+      UI_TRAFFIC_STATS: "true"
     restart: unless-stopped
