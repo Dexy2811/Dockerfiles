@@ -1,6 +1,6 @@
 FROM ubuntu:latest
 
-# Install basic utilities and dependencies
+# Install required utilities and dependencies
 RUN apt-get update && apt-get install -y \
       curl \
       wget \
@@ -9,34 +9,35 @@ RUN apt-get update && apt-get install -y \
       ca-certificates && \
     rm -rf /var/lib/apt/lists/*
 
-# Manually install Temurin OpenJDK 24 from Adoptium
+# Install Temurin OpenJDK 22 from Adoptium
 ENV JAVA_HOME=/opt/java/openjdk
 RUN mkdir -p /opt/java && cd /opt/java && \
-    curl -fsSL "https://github.com/adoptium/temurin24-binaries/releases/latest/download/OpenJDK24U-jdk_x64_linux_hotspot.tar.gz" \
+    curl -fsSL "https://github.com/adoptium/temurin22-binaries/releases/latest/download/OpenJDK22U-jdk_x64_linux_hotspot.tar.gz" \
       | tar -xz && \
-    mv jdk-24* openjdk
+    mv jdk-22* openjdk
 ENV PATH="${JAVA_HOME}/bin:${PATH}"
 
 # Set working directory for CrushFTP installation
 WORKDIR /opt/crushftp
 
-# Run the official CrushFTP install script (which works on Ubuntu)
+# Run the official CrushFTP install script
 RUN curl -fsSL "https://www.crushftp.com/crush11wiki/attach/Linux%20Install/configure.sh" -o configure.sh && \
     chmod +x configure.sh && \
     ./configure.sh && \
     rm configure.sh
 
-# Change to the CrushFTP installation directory; the script creates (or uses) /opt/crushftp/CrushFTP11
+# Change directory to where CrushFTP is installed (the script creates /opt/crushftp/CrushFTP11)
 WORKDIR /opt/crushftp/CrushFTP11
 
 # Create the default admin user (username: crushadmin, password: crushadmin)
 RUN java -jar CrushFTP.jar -a crushadmin crushadmin
 
-# Expose the standard ports (adjust if needed)
+# Expose the standard ports required by CrushFTP
 EXPOSE 21 443 2222 8080 9090 20000-21000
 
-# Declare a volume so that if no external bind mount is provided, Docker creates an anonymous volume
+# Declare a volume so that if no host bind mount is provided, Docker creates an anonymous volume 
+# prepopulated with the image’s CrushFTP installation
 VOLUME ["/opt/crushftp/CrushFTP11"]
 
-# Start CrushFTP in daemon mode
+# Run CrushFTP in daemon mode
 CMD ["java", "-Xmx1024m", "-jar", "CrushFTP.jar", "-d"]
