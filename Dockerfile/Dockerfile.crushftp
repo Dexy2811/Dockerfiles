@@ -1,31 +1,23 @@
-FROM eclipse-temurin:24-jdk-alpine
+FROM debian:bookworm-slim
 
-LABEL maintainer="you@example.com"
-LABEL description="CrushFTP image that works out-of-the-box with preinstalled configuration"
+# Install required tools and OpenJDK 21
+RUN apt-get update && apt-get install -y --no-install-recommends \
+      curl wget unzip openjdk-21-jdk bash && \
+    rm -rf /var/lib/apt/lists/*
 
-# Install utilities
-RUN apk add --no-cache unzip wget bash curl
+WORKDIR /opt/crushftp
 
-# Set working directory
-WORKDIR /var/opt
+# Download the CrushFTP ZIP file from a (hypothetical) URL.
+# Replace the URL below with an actual valid link if available.
+RUN curl -fsSL "https://www.crushftp.com/download/CrushFTP11.zip" -o CrushFTP11.zip && \
+    unzip CrushFTP11.zip && rm CrushFTP11.zip
 
-# Download and install CrushFTP using the official script
-RUN curl -fsSL "https://www.crushftp.com/crush11wiki/attach/Linux%20Install/configure.sh" -o configure.sh && \
-    chmod +x configure.sh && \
-    ./configure.sh && \
-    rm configure.sh
+WORKDIR /opt/crushftp/CrushFTP11
 
-# Change into the installation folder
-WORKDIR /var/opt/CrushFTP11
-
-# Create the default admin user (username: crushadmin, password: crushadmin)
 RUN java -jar CrushFTP.jar -a crushadmin crushadmin
 
-# Expose required ports
-EXPOSE 21 443 2222 8080 9090
+EXPOSE 21 443 2222 8080 9090 20000-21000
 
-# Declare a volume – if you run the container without binding a host folder, Docker creates an anonymous volume
-VOLUME ["/var/opt/CrushFTP11"]
+VOLUME ["/opt/crushftp/CrushFTP11"]
 
-# Run CrushFTP in daemon mode
 CMD ["java", "-Xmx1024m", "-jar", "CrushFTP.jar", "-d"]
