@@ -3,10 +3,9 @@ FROM alpine:latest
 # Set the working directory
 WORKDIR /var/opt
 
-# Install necessary utilities
-apk update
-apk add openjdk21
-RUN apk add --no-cache unzip wget
+RUN apk update && \
+    apk add --no-cache openjdk21 unzip wget
+
 
 # Download and unzip CrushFTP
 RUN wget https://www.crushftp.com/early10/CrushFTP10.zip && \
