@@ -1,0 +1,11 @@
+FROM debian:bullseye-slim
+
+RUN apt-get update && apt-get install -y \
+    wget curl unzip openjdk-17-jdk bash && \
+    wget -O - https://www.crushftp.com/crush11wiki/attach/Linux%20Install/configure.sh | bash
+
+EXPOSE 21 80 443 20000-21000
+
+WORKDIR /var/CrushFTP
+
+CMD ["java", "-jar", "CrushFTP.jar"]
