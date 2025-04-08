@@ -1,24 +1,33 @@
 FROM eclipse-temurin:24-jdk-alpine
 
-# Set working directory to /var/opt
-WORKDIR /var/opt
+LABEL maintainer="you@example.com"
+LABEL description="CrushFTP image that works out-of-the-box with a preinstalled configuration"
 
 # Install necessary utilities
 RUN apk add --no-cache unzip wget bash curl
 
-# Download and run the official CrushFTP install script
+# Set working directory
+WORKDIR /var/opt
+
+# Download and install CrushFTP using the official Linux install script
+# (This script downloads and installs CrushFTP into /var/opt/CrushFTP11)
 RUN curl -fsSL "https://www.crushftp.com/crush11wiki/attach/Linux%20Install/configure.sh" -o configure.sh && \
     chmod +x configure.sh && \
-    ./configure.sh
+    ./configure.sh && \
+    rm configure.sh
 
-# Change to the CrushFTP installation directory
+# Change directory to the installed CrushFTP folder
 WORKDIR /var/opt/CrushFTP11
 
-# Create the default admin user (username: crushadmin, password: crushadmin)
+# Create the default admin user (username/password: crushadmin)
 RUN java -jar CrushFTP.jar -a crushadmin crushadmin
 
-# Expose ports required by CrushFTP
+# Expose the standard ports for FTP, HTTPS, SFTP, and the web interface
 EXPOSE 21 443 2222 8080 9090
 
-# Start CrushFTP in daemon mode
+# Declare a volume so that if no volume override is provided, Docker creates
+# an anonymous volume and auto-populates it with the image’s content.
+VOLUME ["/var/opt/CrushFTP11"]
+
+# Default command to run CrushFTP in daemon mode
 CMD ["java", "-Xmx1024m", "-jar", "CrushFTP.jar", "-d"]
