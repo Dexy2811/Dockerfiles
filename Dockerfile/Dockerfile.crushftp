@@ -1,4 +1,4 @@
-FROM openjdk:24-jdk-alpine
+FROM eclipse-temurin:24-jdk-alpine
 
 # Set the working directory
 WORKDIR /var/opt
