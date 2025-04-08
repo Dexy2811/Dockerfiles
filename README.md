@@ -1,18 +1,7 @@
 # Dockerfiles
 
-A place for all my docker files.
+A place for all my dockerfiles and docker compose files.
 
-
-
-All images are restart=always
-
-The satisfactory image is based on: [wolveix/satisfactory-server:latest](https://github.com/wolveix/satisfactory-server "https://github.com/wolveix/satisfactory-server")
-
-
-The Authentic stack image is from Ibracrop and modified a bit to be more stable: [IBRACORP website](https://docs.ibracorp.io/authentik/authentik/docker-compose/docker-compose-install)
-
-
-Homarr image is default not configured
 
 
 EZ-Wireguard image must have these values modified:
