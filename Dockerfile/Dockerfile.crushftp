@@ -11,6 +11,9 @@ RUN wget https://www.crushftp.com/early10/CrushFTP10.zip && \
     unzip CrushFTP10.zip && \
     rm CrushFTP10.zip
 
+#removes vulnerable package from image
+RUN apk del fontconfig libexpat
+
 # Expose required ports
 EXPOSE 21 443 2222 8080 9090
 
