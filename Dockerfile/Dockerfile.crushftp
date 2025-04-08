@@ -1,25 +1,21 @@
-FROM alpine:latest 
+FROM eclipse-temurin:21-jre-alpine
 
 # Set the working directory
 WORKDIR /var/opt
 
-RUN apk update && \
-    apk add --no-cache openjdk21 unzip wget
+# Install necessary utilities
+RUN apk add --no-cache unzip wget
 
-
-# Download and unzip CrushFTP
-RUN wget https://www.crushftp.com/early10/CrushFTP10.zip && \
-    unzip CrushFTP10.zip && \
-    rm CrushFTP10.zip
-
-#removes vulnerable package from image
-RUN apk del fontconfig libexpat
+# Download and unzip CrushFTP 11
+RUN wget https://www.crushftp.com/early11/CrushFTP11.zip && \
+    unzip CrushFTP11.zip && \
+    rm CrushFTP11.zip
 
 # Expose required ports
 EXPOSE 21 443 2222 8080 9090
 
 # Set the working directory to CrushFTP
-WORKDIR /var/opt/CrushFTP10
+WORKDIR /var/opt/CrushFTP11
 
 # Start CrushFTP
 CMD ["java", "-Xmx1024m", "-jar", "CrushFTP.jar", "-d"]
