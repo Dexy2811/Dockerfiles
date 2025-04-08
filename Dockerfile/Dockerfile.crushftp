@@ -1,7 +1,10 @@
-# Use Ubuntu 22.04 as the base image
-FROM ubuntu:22.04
+# Use the latest Ubuntu release from Docker Hub
+FROM ubuntu:latest
 
-# Install necessary tools and dependencies
+LABEL maintainer="you@example.com"
+LABEL description="CrushFTP image with Temurin OpenJDK 24 on Ubuntu latest"
+
+# Install necessary system utilities and dependencies
 RUN apt-get update && apt-get install -y \
       curl \
       wget \
@@ -10,33 +13,34 @@ RUN apt-get update && apt-get install -y \
       ca-certificates && \
     rm -rf /var/lib/apt/lists/*
 
-# Manually install Temurin OpenJDK 21
+# Manually install Temurin OpenJDK 24 from Adoptium
 ENV JAVA_HOME=/opt/java/openjdk
 RUN mkdir -p /opt/java && cd /opt/java && \
-    curl -fsSL https://github.com/adoptium/temurin21-binaries/releases/latest/download/OpenJDK21U-jdk_x64_linux_hotspot.tar.gz \
+    curl -fsSL "https://github.com/adoptium/temurin24-binaries/releases/latest/download/OpenJDK24U-jdk_x64_linux_hotspot.tar.gz" \
       | tar -xz && \
-    mv jdk-21* openjdk
+    mv jdk-24* openjdk
 ENV PATH="${JAVA_HOME}/bin:${PATH}"
 
 # Set the working directory for CrushFTP installation
 WORKDIR /opt/crushftp
 
-# Download CrushFTP ZIP package (ensure the URL is current and valid)
+# Download and unzip the CrushFTP package
+# Replace the URL below with a valid one if necessary
 RUN curl -fsSL "https://www.crushftp.com/early11/CrushFTP11.zip" -o CrushFTP11.zip && \
     unzip CrushFTP11.zip && rm CrushFTP11.zip
 
 # Assume the ZIP extracts a folder named "CrushFTP11"
 WORKDIR /opt/crushftp/CrushFTP11
 
-# Create the default admin user: username "crushadmin", password "crushadmin"
+# Create the default admin user (username: crushadmin, password: crushadmin)
 RUN java -jar CrushFTP.jar -a crushadmin crushadmin
 
-# Expose the necessary ports (adjust if needed)
+# Expose the standard ports for FTP, HTTPS, SFTP, and web interface plus a passive FTP range
 EXPOSE 21 443 2222 8080 9090 20000-21000
 
-# Declare a volume so that, if no external bind mount is provided,
-# Docker creates an anonymous volume pre-populated with the image data.
+# Declare a volume so that if no external host directory is mounted, Docker creates an anonymous volume
+# prepopulated with the image’s CrushFTP installation
 VOLUME ["/opt/crushftp/CrushFTP11"]
 
-# Launch CrushFTP in daemon mode
-CMD ["java", "-Xmx1024m", "-jar", "CrushFTP.jar", "-d"]
+# Start CrushFTP in daemon mode
+CMD ["java", "-Xmx
