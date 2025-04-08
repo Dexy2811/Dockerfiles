@@ -1,21 +1,20 @@
-FROM bitnami/minideb:bullseye
+FROM bitnami/minideb:bookworm
 
 ENV CRUSH_DIR=/var/CrushFTP
 ENV JAVA_HOME=/usr/lib/jvm/java-21-openjdk
 
-# Install Java, curl, unzip
-RUN install_packages \
-    openjdk-21-jdk \
-    curl \
-    unzip \
-    bash && \
-    mkdir -p $CRUSH_DIR
+# Install required packages
+RUN install_packages curl unzip bash openjdk-21-jdk ca-certificates && \
+    mkdir -p ${CRUSH_DIR}
 
-# Install CrushFTP using official script
-RUN curl -L https://www.crushftp.com/crush11wiki/attach/Linux%20Install/configure.sh | bash
+# Set working directory
+WORKDIR ${CRUSH_DIR}
 
-WORKDIR $CRUSH_DIR
+# Install CrushFTP using their script
+RUN curl -fsSL https://www.crushftp.com/crush11wiki/attach/Linux%20Install/configure.sh | bash
 
+# Expose required ports
 EXPOSE 21 80 443 20000-21000
 
+# Start CrushFTP
 CMD ["java", "-jar", "CrushFTP.jar"]
