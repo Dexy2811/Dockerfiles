@@ -9,35 +9,35 @@ RUN apt-get update && apt-get install -y \
       ca-certificates && \
     rm -rf /var/lib/apt/lists/*
 
-# Install Temurin OpenJDK 21 from Adoptium
+# Install Temurin OpenJDK 24 (EA) from Adoptium via their API
 ENV JAVA_HOME=/opt/java/openjdk
 RUN mkdir -p /opt/java && cd /opt/java && \
-    curl -fsSL "https://github.com/adoptium/temurin21-binaries/releases/latest/download/OpenJDK21U-jdk_x64_linux_hotspot.tar.gz" \
-      | tar -xz && \
-    mv jdk-21* openjdk
+    # This endpoint returns the latest EA build for Java 24 on Linux x64 using HotSpot.
+    curl -fsSL "https://api.adoptium.net/v3/binary/latest/24/ea/linux/x64/jdk/hotspot/normal/eclipse" | tar -xz && \
+    # Rename the extracted folder (which starts with "jdk-24...") to "openjdk"
+    mv jdk-24* openjdk
 ENV PATH="${JAVA_HOME}/bin:${PATH}"
 
 # Set working directory for CrushFTP installation
 WORKDIR /opt/crushftp
 
-# Run the official CrushFTP install script (this installs CrushFTP into /opt/crushftp/CrushFTP11)
+# Run the official CrushFTP install script (works on Ubuntu)
 RUN curl -fsSL "https://www.crushftp.com/crush11wiki/attach/Linux%20Install/configure.sh" -o configure.sh && \
     chmod +x configure.sh && \
     ./configure.sh && \
     rm configure.sh
 
-# Change into the CrushFTP installation directory
+# Change into the CrushFTP installation directory (the script installs CrushFTP into /opt/crushftp/CrushFTP11)
 WORKDIR /opt/crushftp/CrushFTP11
 
 # Create the default admin user (username: crushadmin, password: crushadmin)
 RUN java -jar CrushFTP.jar -a crushadmin crushadmin
 
-# Expose the necessary ports (adjust if necessary)
+# Expose necessary ports for FTP, HTTPS, SFTP, and web interfaces
 EXPOSE 21 443 2222 8080 9090 20000-21000
 
 # Declare the CrushFTP installation directory as a volume.
-# If you run the container without binding an external directory, Docker creates an anonymous volume
-# and automatically populates it with the files baked into the image.
+# This allows Docker to create an anonymous volume (populated with the image’s data) unless an external directory is mounted.
 VOLUME ["/opt/crushftp/CrushFTP11"]
 
 # Start CrushFTP in daemon mode
