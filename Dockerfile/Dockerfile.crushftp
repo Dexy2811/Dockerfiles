@@ -20,7 +20,7 @@ RUN wget -q https://www.crushftp.com/early11/CrushFTP11.zip && \
 RUN chmod +x ${CRUSH_DIR}/crushftp_init.sh
 
 # Create admin user with default password
-RUN java -jar ${CRUSH_DIR}/CrushFTP.jar -a crushadmin crushadmin
+RUN java -jar CrushFTP.jar -a crushadmin crushadmin
 
 # Set working dir
 WORKDIR ${CRUSH_DIR}
