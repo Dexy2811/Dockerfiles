@@ -1,9 +1,11 @@
-FROM eclipse-temurin:21-jre-alpine
+FROM alpine:latest 
 
 # Set the working directory
 WORKDIR /var/opt
 
 # Install necessary utilities
+apk update
+apk add openjdk21
 RUN apk add --no-cache unzip wget
 
 # Download and unzip CrushFTP
