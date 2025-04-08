@@ -1,22 +1,21 @@
-FROM debian:bookworm-slim
+FROM eclipse-temurin:21-jre-alpine
 
-ENV CRUSH_DIR=/var/CrushFTP
-ENV JAVA_HOME=/usr/lib/jvm/java-21-openjdk
+# Set the working directory
+WORKDIR /var/opt
 
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-        wget \
-        curl \
-        unzip \
-        bash \
-        openjdk-21-jdk \
-        ca-certificates && \
-    rm -rf /var/lib/apt/lists/*
+# Install necessary utilities
+RUN apk add --no-cache unzip wget
 
-RUN wget -O - https://www.crushftp.com/crush11wiki/attach/Linux%20Install/configure.sh | bash
+# Download and unzip CrushFTP
+RUN wget https://www.crushftp.com/early10/CrushFTP10.zip && \
+    unzip CrushFTP10.zip && \
+    rm CrushFTP10.zip
 
-WORKDIR ${CRUSH_DIR}
+# Expose required ports
+EXPOSE 21 443 2222 8080 9090
 
-EXPOSE 21 80 443 20000-21000
+# Set the working directory to CrushFTP
+WORKDIR /var/opt/CrushFTP10
 
-CMD ["java", "-jar", "CrushFTP.jar"]
+# Start CrushFTP
+CMD ["java", "-Xmx1024m", "-jar", "CrushFTP.jar", "-d"]
