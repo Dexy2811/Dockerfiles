@@ -1,21 +1,32 @@
 FROM eclipse-temurin:24-jdk-alpine
 
-# Set the working directory
+# Environment variables
+ENV CRUSH_DIR=/var/opt/CrushFTP11
+ENV JAVA_HOME=/opt/java/openjdk
+ENV PATH="$JAVA_HOME/bin:$PATH"
+
+# Install only what's needed
+RUN apk add --no-cache unzip wget bash
+
+# Set working directory
 WORKDIR /var/opt
 
-# Install necessary utilities
-RUN apk add --no-cache unzip wget
-
-# Download and unzip CrushFTP 11
-RUN wget https://www.crushftp.com/early11/CrushFTP11.zip && \
+# Download and extract CrushFTP 11
+RUN wget -q https://www.crushftp.com/early11/CrushFTP11.zip && \
     unzip CrushFTP11.zip && \
     rm CrushFTP11.zip
 
-# Expose required ports
+# Set permissions (optional but clean)
+RUN chmod +x ${CRUSH_DIR}/crushftp_init.sh
+
+# Create admin user with default password
+RUN java -jar ${CRUSH_DIR}/CrushFTP.jar -a crushadmin crushadmin
+
+# Set working dir
+WORKDIR ${CRUSH_DIR}
+
+# Expose necessary ports
 EXPOSE 21 443 2222 8080 9090
 
-# Set the working directory to CrushFTP
-WORKDIR /var/opt/CrushFTP11
-
-# Start CrushFTP
+# Default command to run CrushFTP
 CMD ["java", "-Xmx1024m", "-jar", "CrushFTP.jar", "-d"]
