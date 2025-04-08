@@ -27,4 +27,4 @@ jobs:
           context: ./Dockerfile
           file: ./Dockerfile/Dockerfile.crushftp
           push: true
-          tags: yourusername/crushftp:latest
+          tags: dexy2811/crushftp:latest
