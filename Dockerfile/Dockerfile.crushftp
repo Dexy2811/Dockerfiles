@@ -1,23 +1,31 @@
 FROM debian:bookworm-slim
 
-# Install required tools and OpenJDK 21
+# Basic tools
 RUN apt-get update && apt-get install -y --no-install-recommends \
-      curl wget unzip openjdk-21-jdk bash && \
+    curl wget unzip bash && \
     rm -rf /var/lib/apt/lists/*
+
+# Download and install Adoptium (Temurin) OpenJDK 21
+ENV JAVA_HOME=/opt/java/openjdk
+RUN mkdir -p /opt/java \
+ && cd /opt/java \
+ && curl -fsSL https://github.com/adoptium/temurin21-binaries/releases/latest/download/OpenJDK21U-jdk_x64_linux_hotspot.tar.gz \
+    | tar -xz \
+ && mv jdk-* openjdk
+
+ENV PATH="${JAVA_HOME}/bin:${PATH}"
 
 WORKDIR /opt/crushftp
 
-# Download the CrushFTP ZIP file from a (hypothetical) URL.
-# Replace the URL below with an actual valid link if available.
-RUN curl -fsSL "https://www.crushftp.com/download/CrushFTP11.zip" -o CrushFTP11.zip && \
-    unzip CrushFTP11.zip && rm CrushFTP11.zip
+# Download/Copy your CrushFTP ZIP
+RUN curl -fsSL "https://www.crushftp.com/early11/CrushFTP11.zip" -o CrushFTP11.zip && \
+    unzip CrushFTP11.zip && \
+    rm CrushFTP11.zip
 
 WORKDIR /opt/crushftp/CrushFTP11
-
 RUN java -jar CrushFTP.jar -a crushadmin crushadmin
 
-EXPOSE 21 443 2222 8080 9090 20000-21000
-
+EXPOSE 21 443 2222 8080 9090
 VOLUME ["/opt/crushftp/CrushFTP11"]
 
 CMD ["java", "-Xmx1024m", "-jar", "CrushFTP.jar", "-d"]
