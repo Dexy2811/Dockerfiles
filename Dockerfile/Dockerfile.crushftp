@@ -30,9 +30,6 @@ RUN curl -fsSL "https://www.crushftp.com/crush11wiki/attach/Linux%20Install/conf
 # Change into the CrushFTP installation directory (the script installs CrushFTP into /opt/crushftp/CrushFTP11)
 WORKDIR /opt/crushftp/CrushFTP11
 
-# Create the default admin user (username: crushadmin, password: crushadmin)
-RUN java -jar CrushFTP.jar -a crushadmin crushadmin
-
 # Expose necessary ports for FTP, HTTPS, SFTP, and web interfaces
 EXPOSE 21 443 2222 8080 9090 20000-21000
 
