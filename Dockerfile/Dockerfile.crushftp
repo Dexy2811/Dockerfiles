@@ -1,10 +1,6 @@
-# Use the latest Ubuntu release from Docker Hub
 FROM ubuntu:latest
 
-LABEL maintainer="you@example.com"
-LABEL description="CrushFTP image with Temurin OpenJDK 24 on Ubuntu latest"
-
-# Install necessary system utilities and dependencies
+# Install basic utilities and dependencies
 RUN apt-get update && apt-get install -y \
       curl \
       wget \
@@ -21,26 +17,26 @@ RUN mkdir -p /opt/java && cd /opt/java && \
     mv jdk-24* openjdk
 ENV PATH="${JAVA_HOME}/bin:${PATH}"
 
-# Set the working directory for CrushFTP installation
+# Set working directory for CrushFTP installation
 WORKDIR /opt/crushftp
 
-# Download and unzip the CrushFTP package
-# Replace the URL below with a valid one if necessary
-RUN curl -fsSL "https://www.crushftp.com/early11/CrushFTP11.zip" -o CrushFTP11.zip && \
-    unzip CrushFTP11.zip && rm CrushFTP11.zip
+# Run the official CrushFTP install script (which works on Ubuntu)
+RUN curl -fsSL "https://www.crushftp.com/crush11wiki/attach/Linux%20Install/configure.sh" -o configure.sh && \
+    chmod +x configure.sh && \
+    ./configure.sh && \
+    rm configure.sh
 
-# Assume the ZIP extracts a folder named "CrushFTP11"
+# Change to the CrushFTP installation directory; the script creates (or uses) /opt/crushftp/CrushFTP11
 WORKDIR /opt/crushftp/CrushFTP11
 
 # Create the default admin user (username: crushadmin, password: crushadmin)
 RUN java -jar CrushFTP.jar -a crushadmin crushadmin
 
-# Expose the standard ports for FTP, HTTPS, SFTP, and web interface plus a passive FTP range
+# Expose the standard ports (adjust if needed)
 EXPOSE 21 443 2222 8080 9090 20000-21000
 
-# Declare a volume so that if no external host directory is mounted, Docker creates an anonymous volume
-# prepopulated with the image’s CrushFTP installation
+# Declare a volume so that if no external bind mount is provided, Docker creates an anonymous volume
 VOLUME ["/opt/crushftp/CrushFTP11"]
 
 # Start CrushFTP in daemon mode
-CMD ["java", "-Xmx
+CMD ["java", "-Xmx1024m", "-jar", "CrushFTP.jar", "-d"]
