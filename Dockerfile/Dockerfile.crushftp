@@ -1,11 +1,15 @@
-FROM debian:bullseye-slim
+FROM alpine:latest
 
-RUN apt-get update && apt-get install -y \
-    wget curl unzip openjdk-17-jdk bash && \
-    wget -O - https://www.crushftp.com/crush11wiki/attach/Linux%20Install/configure.sh | bash
+ENV CRUSH_DIR=/var/CrushFTP
+ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk
+
+RUN apk add --no-cache openjdk17 bash curl unzip && \
+    mkdir -p $CRUSH_DIR && \
+    cd $CRUSH_DIR && \
+    curl -L https://www.crushftp.com/crush11wiki/attach/Linux%20Install/configure.sh | bash
+
+WORKDIR $CRUSH_DIR
 
 EXPOSE 21 80 443 20000-21000
-
-WORKDIR /var/CrushFTP
 
 CMD ["java", "-jar", "CrushFTP.jar"]
