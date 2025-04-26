@@ -153,6 +153,17 @@ services:
     depends_on:
       - plex
 
+  huntarr:
+    container_name: huntarr
+    ports:
+      - "9705:9705"
+    volumes:
+      - huntarr-config:/config
+    environment:
+      - TZ=Europe/Oslo
+    restart: unless-stopped
+
+
 networks:
   backend:
     external: true
