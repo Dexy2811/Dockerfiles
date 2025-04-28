@@ -35,21 +35,6 @@ services:
     networks:
       - backend
 
-  prowlarr:
-    image: lscr.io/linuxserver/prowlarr:latest
-    container_name: prowlarr
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Europe/Oslo
-    volumes:
-      - /mnt/3TB/docker/Data/prowlarr/config:/config
-    ports:
-      - "9696:9696"
-    restart: unless-stopped
-    networks:
-      - backend
-
   sonarr:
     image: lscr.io/linuxserver/sonarr:latest
     container_name: sonarr
