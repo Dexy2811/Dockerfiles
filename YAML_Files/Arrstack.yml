@@ -51,7 +51,6 @@ services:
     networks:
       - backend
     depends_on:
-      - prowlarr
       - qbittorrent
       - nzbget
 
@@ -71,7 +70,6 @@ services:
     networks:
       - backend
     depends_on:
-      - prowlarr
       - qbittorrent
       - nzbget
 
