@@ -3,9 +3,9 @@ services:
     image: haproxy:latest
     container_name: haproxy
     volumes:
-      - /mnt/3TB/docker/Data/haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
-      - /mnt/3TB/docker/Data/haproxy/errors:/etc/haproxy/errors:ro
-      - /mnt/3TB/docker/Data/haproxy/certs:/usr/local/etc/haproxy/certs:ro
+      - /mnt/3TB/Docker/Data/haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+      - /mnt/3TB/Docker/Data/haproxy/errors:/etc/haproxy/errors:ro
+      - /mnt/3TB/Docker/Data/haproxy/certs:/usr/local/etc/haproxy/certs:ro
     ports:
       - "80:80"
       - "443:443"
